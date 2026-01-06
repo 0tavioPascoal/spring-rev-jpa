@@ -1,6 +1,7 @@
 package com.Tavin.spring_rev_jpa.controller;
 
-import com.Tavin.spring_rev_jpa.infra.dao.AuthorDao;
+import com.Tavin.spring_rev_jpa.infra.projection.AuthorResponseProjection;
+import com.Tavin.spring_rev_jpa.infra.service.AuthorService;
 import com.Tavin.spring_rev_jpa.infra.entity.Author;
 import com.Tavin.spring_rev_jpa.infra.entity.InfoAuthor;
 import org.springframework.web.bind.annotation.*;
@@ -11,57 +12,62 @@ import java.util.List;
 @RequestMapping("authors")
 public class AuthorController {
 
-    private final AuthorDao AuthorDao;
+    private final AuthorService AuthorService;
 
-    public AuthorController(AuthorDao AuthorDao) {
-        this.AuthorDao = AuthorDao;
+    public AuthorController(AuthorService AuthorService) {
+        this.AuthorService = AuthorService;
     }
 
     @PostMapping()
     public Author Save(@RequestBody Author author) {
-        AuthorDao.SaveAuthor(author);
+        AuthorService.SaveAuthor(author);
         return author;
     }
 
     @PutMapping()
     public Author Update(@RequestBody Author author) {
-        AuthorDao.UpdateAuthor(author);
+        AuthorService.UpdateAuthor(author);
         return author;
     }
 
     @DeleteMapping("{id}")
     public String Delete(@PathVariable Long id) {
-        AuthorDao.DeleteAuthor(id);
+        AuthorService.DeleteAuthor(id);
         return "Success";
     }
 
     @GetMapping("{id}")
     public Author FindByIdAuthor(@PathVariable Long id) {
-        return AuthorDao.FindById(id);
+        return AuthorService.FindById(id);
     }
 
     @GetMapping()
     public List<Author> FindAllAuthors() {
-        return AuthorDao.findAll();
+        return AuthorService.findAll();
     }
 
     @GetMapping("nameOrLastName")
-    public List<Author> FindAllAuthorsOrNameOrLastName(@RequestParam String query) {
-        return AuthorDao.findAllByNameOrLastName(query);
+    public List<Author> FindAllAuthorsOrNameOrLastName(@RequestParam String termo) {
+        return AuthorService.findAllByNameOrLastName(termo);
     }
 
     @GetMapping("quantity")
     public Long  FindAllAuthorsQuantity() {
-        return AuthorDao.Quantity();
+        return AuthorService.Quantity();
     }
 
     @PutMapping("{id}/info")
     public Author UpdateAuthor(@RequestBody InfoAuthor author, @PathVariable Long id) {
-        return AuthorDao.SaveInfoAuthor(author, id);
+        return AuthorService.SaveInfoAuthor(author, id);
     }
 
     @GetMapping("Cargo")
-    public List<Author> FindByCargo(@RequestParam String termo) {
-        return AuthorDao.FindByCargo(termo);
+    public List<Author> FindByCargo(@RequestParam String cargo) {
+        return AuthorService.FindByCargo(cargo);
+    }
+
+    @GetMapping("infoAuthor")
+    public AuthorResponseProjection FindAuthorInfoByID(@RequestParam Long id) {
+        return AuthorService.findAuthorInfoById(id);
     }
 }
